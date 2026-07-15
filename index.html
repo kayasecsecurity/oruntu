@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Örüntü — AI Destekli Psikoloji Günlüğü</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,440;9..144,560;9..144,650&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B1E30;
+    --ink-soft:#252A44;
+    --ink-softer:#333865;
+    --paper:#F6F0E3;
+    --paper-dim:#ECE3CF;
+    --gold:#C99A4B;
+    --gold-bright:#E3B968;
+    --sage:#7E9179;
+    --sage-bright:#9DB097;
+    --text-ink:#ECE6D6;
+    --text-ink-muted:#A9ABC4;
+    --text-paper:#282415;
+    --text-paper-muted:#6E6552;
+    --line-ink:rgba(236,230,214,0.14);
+    --line-paper:rgba(40,36,21,0.14);
+    --display:'Fraunces',serif;
+    --body:'Inter',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{margin:0;font-family:var(--body);color:var(--text-paper);background:var(--paper);line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased}
+  img,svg{display:block;max-width:100%}
+  a{color:inherit}
+  h1,h2,h3{font-family:var(--display);margin:0;font-weight:650;letter-spacing:-0.01em}
+  p{margin:0}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  section{position:relative}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:0.16em;text-transform:uppercase;font-weight:500;margin-bottom:14px;display:inline-flex;align-items:center;gap:8px}
+  .eyebrow::before{content:"";width:18px;height:1px;background:currentColor;display:inline-block}
+  .on-ink{color:var(--text-ink)} .on-ink .muted{color:var(--text-ink-muted)}
+  .on-paper{color:var(--text-paper)} .on-paper .muted{color:var(--text-paper-muted)}
+  :focus-visible{outline:2px solid var(--gold-bright);outline-offset:3px}
+  button{font-family:var(--body);cursor:pointer}
+
+  /* ---- NAV ---- */
+  .nav{position:sticky;top:0;z-index:40;background:rgba(27,30,48,0.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-ink)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+  .brand-mark{font-family:var(--display);font-size:22px;font-weight:650;color:var(--text-ink)}
+  .brand-tag{font-family:var(--mono);font-size:11px;color:var(--text-ink-muted);letter-spacing:0.04em}
+  .nav-links{display:flex;gap:32px;list-style:none;margin:0;padding:0;font-size:14.5px}
+  .nav-links a{text-decoration:none;color:var(--text-ink-muted);transition:color .2s}
+  .nav-links a:hover{color:var(--text-ink)}
+  .nav-pill{font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;color:var(--ink);background:var(--gold-bright);padding:5px 10px;border-radius:100px;text-transform:uppercase}
+  @media (max-width:760px){ .nav-links{display:none} }
+
+  /* ---- HERO ---- */
+  .hero{background:radial-gradient(ellipse 900px 500px at 78% -10%, #2E325B 0%, var(--ink) 55%);padding:88px 0 64px;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:48px;align-items:center}
+  @media (max-width:900px){ .hero-grid{grid-template-columns:1fr} }
+  .hero h1{font-size:clamp(40px,6vw,68px);line-height:1.03;color:var(--text-ink);margin:18px 0 22px}
+  .hero p.lead{font-size:18px;max-width:46ch;color:var(--text-ink-muted);margin-bottom:34px}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:11px;border:1px solid transparent;font-size:15px;font-weight:600;text-decoration:none;transition:transform .15s ease, background .2s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-gold{background:var(--gold-bright);color:#241A05}
+  .btn-ghost{border-color:var(--line-ink);color:var(--text-ink)}
+  .hero-visual{aspect-ratio:8/5.2;width:100%}
+
+  /* ---- SECTION PADDING ---- */
+  .sec{padding:88px 0}
+  @media (max-width:760px){ .sec{padding:60px 0} }
+  .sec h2{font-size:clamp(28px,3.6vw,42px);line-height:1.12;max-width:18ch}
+
+  /* ---- PROBLEM ---- */
+  .problem{background:var(--paper)}
+  .contrast{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px}
+  @media (max-width:760px){ .contrast{grid-template-columns:1fr} }
+  .card{border-radius:20px;padding:30px 28px}
+  .card-old{background:#fff;border:1px solid var(--line-paper);opacity:0.82}
+  .card-new{background:var(--ink);color:var(--text-ink);box-shadow:0 20px 44px -18px rgba(27,30,48,0.45)}
+  .card h3{font-size:20px;margin-bottom:14px;font-weight:650}
+  .card .tiny{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin-bottom:10px;display:block}
+  .card ul{margin:0;padding-left:18px}
+  .card li{margin-bottom:8px;font-size:15px}
+
+  /* ---- HOW IT WORKS ---- */
+  .how{background:var(--paper-dim)}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:48px}
+  @media (max-width:860px){ .steps{grid-template-columns:1fr} }
+  .step-num{font-family:var(--display);font-size:15px;color:var(--gold);font-weight:650;margin-bottom:10px}
+  .step h3{font-size:21px;margin-bottom:10px}
+  .step p{color:var(--text-paper-muted);font-size:15px}
+  .outputs{margin-top:64px}
+  .outputs-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+  .output-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  @media (max-width:960px){ .output-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:520px){ .output-grid{grid-template-columns:1fr} }
+  .out-card{background:#fff;border:1px solid var(--line-paper);border-radius:16px;padding:20px 18px}
+  .out-card .ico{width:30px;height:30px;margin-bottom:14px;color:var(--sage)}
+  .out-card h4{font-family:var(--body);font-weight:600;font-size:14.5px;margin-bottom:8px}
+  .out-card p{font-size:13px;color:var(--text-paper-muted);line-height:1.5}
+
+  /* ---- DEMO ---- */
+  .demo{background:var(--ink)}
+  .demo-shell{margin-top:44px;background:var(--ink-soft);border:1px solid var(--line-ink);border-radius:22px;padding:30px;display:grid;grid-template-columns:1fr 1fr;gap:30px}
+  @media (max-width:900px){ .demo-shell{grid-template-columns:1fr} }
+  .demo-note{font-size:13px;color:var(--text-ink-muted);margin-top:10px}
+  .presets{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+  .chip{background:transparent;border:1px solid var(--line-ink);color:var(--text-ink-muted);border-radius:100px;padding:7px 14px;font-size:12.5px;transition:all .15s}
+  .chip:hover{border-color:var(--gold-bright);color:var(--text-ink)}
+  textarea{width:100%;min-height:130px;background:var(--ink);border:1px solid var(--line-ink);border-radius:14px;color:var(--text-ink);font-family:var(--body);font-size:15px;padding:16px;resize:vertical;line-height:1.5}
+  textarea:focus{outline:none;border-color:var(--gold-bright)}
+  .demo-actions{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+  .out-panel{background:var(--ink);border:1px solid var(--line-ink);border-radius:16px;padding:22px}
+  .out-panel h4{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-ink-muted);margin-bottom:14px;font-weight:500}
+  #analyzedText{font-size:15.5px;line-height:1.7;color:var(--text-ink)}
+  #analyzedText mark{background:rgba(201,154,75,0.22);color:var(--text-ink);padding:1px 3px;border-radius:4px;border-bottom:1.5px solid var(--gold-bright);text-decoration:none}
+  .tagline{font-size:13.5px;color:var(--text-ink-muted);font-style:italic}
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .tag{font-family:var(--mono);font-size:11px;padding:5px 10px;border-radius:8px;background:rgba(126,145,121,0.18);color:var(--sage-bright);border:1px solid rgba(126,145,121,0.35)}
+  .tag.trig{background:rgba(201,154,75,0.16);color:var(--gold-bright);border-color:rgba(201,154,75,0.35)}
+  .chart-wrap{margin-top:20px;padding-top:18px;border-top:1px solid var(--line-ink)}
+  .chart-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-ink-muted);margin-top:6px}
+
+  /* ---- SAFETY ---- */
+  .safety{background:var(--paper)}
+  .safety-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;margin-top:44px;align-items:start}
+  @media (max-width:900px){ .safety-grid{grid-template-columns:1fr} }
+  .principle{display:flex;gap:16px;padding:18px 0;border-top:1px solid var(--line-paper)}
+  .principle:last-child{border-bottom:1px solid var(--line-paper)}
+  .principle .n{font-family:var(--display);color:var(--gold);font-weight:650;font-size:16px;flex:0 0 28px}
+  .principle h4{font-size:15.5px;font-weight:600;margin-bottom:4px}
+  .principle p{font-size:14px;color:var(--text-paper-muted)}
+  .helpbox{background:var(--ink);color:var(--text-ink);border-radius:20px;padding:28px}
+  .helpbox h3{font-size:18px;margin-bottom:6px}
+  .helpbox .sub{font-size:13.5px;color:var(--text-ink-muted);margin-bottom:20px}
+  .helpline{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-top:1px solid var(--line-ink)}
+  .helpline:last-child{padding-bottom:0}
+  .helpline .num{font-family:var(--mono);font-size:20px;color:var(--gold-bright);font-weight:500}
+  .helpline .desc{font-size:12.5px;color:var(--text-ink-muted);max-width:22ch;text-align:right}
+
+  /* ---- TEAM/ROADMAP ---- */
+  .team{background:var(--ink)}
+  .team-row{display:grid;grid-template-columns:0.9fr 1.1fr;gap:48px;margin-top:44px}
+  @media (max-width:900px){ .team-row{grid-template-columns:1fr} }
+  .person{display:flex;gap:14px;align-items:flex-start;margin-bottom:22px}
+  .avatar{width:46px;height:46px;border-radius:12px;background:var(--ink-softer);display:flex;align-items:center;justify-content:center;font-family:var(--display);color:var(--gold-bright);font-weight:650;flex:none}
+  .person h4{font-size:15.5px;font-weight:600;color:var(--text-ink)}
+  .person p{font-size:13.5px;color:var(--text-ink-muted)}
+  .timeline{position:relative;padding-left:26px}
+  .timeline::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--line-ink)}
+  .phase{position:relative;padding-bottom:26px}
+  .phase:last-child{padding-bottom:0}
+  .phase::before{content:"";position:absolute;left:-26px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--gold-bright);border:3px solid var(--ink)}
+  .phase .when{font-family:var(--mono);font-size:11px;color:var(--gold-bright);letter-spacing:.06em;text-transform:uppercase}
+  .phase h4{font-size:16px;color:var(--text-ink);margin:4px 0 4px}
+  .phase p{font-size:13.5px;color:var(--text-ink-muted)}
+
+  /* ---- FOOTER ---- */
+  footer{background:var(--ink-soft);padding:44px 0;border-top:1px solid var(--line-ink)}
+  .foot-row{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot-row p{font-size:13px;color:var(--text-ink-muted)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="#top" class="brand">
+      <span class="brand-mark">Örüntü</span>
+      <span class="brand-tag">AI destekli psikoloji günlüğü</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#urun">Ürün</a></li>
+      <li><a href="#nasil-calisir">Nasıl Çalışır</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#guvenlik">Güvenlik</a></li>
+      <li><a href="#ekip">Ekip</a></li>
+    </ul>
+    <span class="nav-pill">Kavram Önizlemesi</span>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="on-ink">
+      <span class="eyebrow" style="color:var(--gold-bright)">AI Destekli Psikoloji Günlüğü</span>
+      <h1>Bir emoji değil,<br>bir örüntü.</h1>
+      <p class="lead">Örüntü, günlük yazılarından tekrar eden düşünce kalıplarını, olası bilişsel çarpıtmaları ve duygusal tetikleyicilerini zaman içinde görünür kılar. Yüzeysel bir ruh hali takibi değil, yazdıkça derinleşen bir öz-farkındalık pratiği.</p>
+      <div class="cta-row">
+        <a href="#demo" class="btn btn-gold">Demoyu Dene</a>
+        <a href="#nasil-calisir" class="btn btn-ghost">Nasıl çalıştığını gör</a>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#E3B968"/>
+            <stop offset="100%" stop-color="#9DB097"/>
+          </linearGradient>
+        </defs>
+        <g opacity="0.5">
+          <line x1="60" y1="120" x2="740" y2="120" stroke="#A9ABC4" stroke-width="0.5" stroke-dasharray="2 6"/>
+          <line x1="60" y1="260" x2="740" y2="260" stroke="#A9ABC4" stroke-width="0.5" stroke-dasharray="2 6"/>
+          <line x1="60" y1="400" x2="740" y2="400" stroke="#A9ABC4" stroke-width="0.5" stroke-dasharray="2 6"/>
+        </g>
+        <path id="heroPath" d="M60,300 C78,262 96,338 116,296 C138,250 154,330 176,288 C198,246 214,320 236,284 C258,248 276,312 298,286 C316,264 330,296 344,308 L430,220 L500,290 L580,150 L660,230 L740,110"
+          fill="none" stroke="url(#lineGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <g id="heroDots">
+          <circle cx="430" cy="220" r="6" fill="#E3B968"/>
+          <circle cx="500" cy="290" r="6" fill="#9DB097"/>
+          <circle cx="580" cy="150" r="6" fill="#E3B968"/>
+          <circle cx="660" cy="230" r="6" fill="#9DB097"/>
+          <circle cx="740" cy="110" r="7" fill="#E3B968"/>
+        </g>
+        <text x="60" y="345" font-family="IBM Plex Mono, monospace" font-size="11" fill="#A9ABC4">yazdıkların</text>
+        <text x="620" y="95" font-family="IBM Plex Mono, monospace" font-size="11" fill="#A9ABC4">örüntün</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section class="sec problem on-paper" id="urun">
+  <div class="wrap">
+    <span class="eyebrow" style="color:var(--sage)">Neden</span>
+    <h2>Mevcut ruh hali uygulamaları<br>yüzeyde kalıyor.</h2>
+    <div class="contrast">
+      <div class="card card-old">
+        <span class="tiny">Alışılmış mood tracker</span>
+        <h3>Seç, unut, tekrarla</h3>
+        <ul>
+          <li>Bir emoji seçersin.</li>
+          <li>Basit bir çizgi grafik görürsün.</li>
+          <li>Neden öyle hissettiğin hiç sorulmaz.</li>
+          <li>Ertesi gün aynı döngü, aynı yüzeysellik.</li>
+        </ul>
+      </div>
+      <div class="card card-new">
+        <span class="tiny" style="color:var(--gold-bright)">Örüntü</span>
+        <h3>Yaz, gözlemle, tanı</h3>
+        <ul>
+          <li>Kendi kelimelerinle, sansürsüz yazarsın.</li>
+          <li>Tekrar eden düşünce kalıpların işaretlenir.</li>
+          <li>Çıkarımlar kesin yargı değil, olası gözlemdir — onayın senindir.</li>
+          <li>Haftalar içinde neyin değiştiğini, neyin sürdüğünü görürsün.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec how on-paper" id="nasil-calisir">
+  <div class="wrap">
+    <span class="eyebrow" style="color:var(--gold)">Süreç</span>
+    <h2>Üç adım, tek bir amaç: kendini görmek</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Yaz</h3>
+        <p>Günlüğünü, hiç sansürlemeden, kendi kelimelerinle yazarsın. Format yok, kural yok — yalnızca sen ve boş sayfa.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Örüntüyü bul</h3>
+        <p>Yapay zeka; tekrarlayan düşünceleri, olası çarpıtmaları ve tetikleyicileri işaretler. Kesin bir teşhis olarak değil, senin onayına açık gözlemler olarak.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Zamanla gör</h3>
+        <p>Haftalar ve aylar içinde duygu grafiğin; hangi örüntülerin sürdüğünü, nelerin değiştiğini sana gösterir.</p>
+      </div>
+    </div>
+
+    <div class="outputs">
+      <div class="outputs-head">
+        <h3 style="font-family:var(--body);font-weight:600;font-size:15px;color:var(--text-paper-muted)">Yapay zekanın çıkardığı 5 temel içgörü</h3>
+      </div>
+      <div class="output-grid">
+        <div class="out-card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12a8 8 0 1 1 8 8"/><path d="M4 12l3-3M4 12l3 3"/></svg>
+          <h4>Tekrarlayan Düşünce Kalıpları</h4>
+          <p>Sık tekrarlanan ruminasyon ve otomatik düşüncelerin zaman içinde kümelenmesi.</p>
+        </div>
+        <div class="out-card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.5 5 5.5.8-4 4 1 5.4L12 15.8 6.9 18.2l1-5.4-4-4L9.5 8z"/></svg>
+          <h4>Bilişsel Çarpıtmalar</h4>
+          <p>Beck/Burns taksonomisine dayanan, onayına açık ve "olası" diliyle sunulan gözlemler.</p>
+        </div>
+        <div class="out-card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.4"/></svg>
+          <h4>Tetikleyiciler</h4>
+          <p>Metinden çıkarılan olay, kişi, yer ve zaman bağlamı.</p>
+        </div>
+        <div class="out-card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l5-6 4 3 6-9"/><path d="M3 21h18"/></svg>
+          <h4>Duygu Grafikleri</h4>
+          <p>1-5 ölçeğinde netleştirilmiş yoğunluk ve eğilim çizgisi.</p>
+        </div>
+        <div class="out-card">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg>
+          <h4>Zaman İçindeki Değişim</h4>
+          <p>Haftalık/aylık trendler; mevsimsel ya da dönemsel örüntülerin görünür kılınması.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec demo on-ink" id="demo">
+  <div class="wrap">
+    <span class="eyebrow" style="color:var(--gold-bright)">Canlı örnek · gerçek veri değil</span>
+    <h2>Bunu dene.</h2>
+    <p class="lead" style="margin-top:14px">Aşağıya örnek bir günlük cümlesi yaz ya da hazır örneklerden birini seç. Bu, gerçek modelin basitleştirilmiş bir gösterimidir — üretim sürümü çok daha nüanslı çalışır ve her zaman insan onayından geçer.</p>
+
+    <div class="demo-shell">
+      <div>
+        <h4 style="font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-ink-muted);margin-bottom:10px;font-weight:500">Günlüğün</h4>
+        <div class="presets">
+          <button class="chip" data-sample="0">Örnek: Sınav</button>
+          <button class="chip" data-sample="1">Örnek: İş</button>
+          <button class="chip" data-sample="2">Örnek: Sakin gün</button>
+        </div>
+        <textarea id="journalInput" placeholder="Bugün nasıl geçti? Aklından geçenleri olduğu gibi yaz…"></textarea>
+        <div class="demo-actions">
+          <button class="btn btn-gold" id="analyzeBtn">Analiz Et</button>
+          <span class="demo-note">Yazdıkların bu tarayıcıdan hiçbir yere gönderilmez.</span>
+        </div>
+      </div>
+
+      <div class="out-panel">
+        <h4>Örüntü ne gördü</h4>
+        <div id="analyzedText">Analiz etmek için soldan bir örnek seç ya da kendi cümleni yaz.</div>
+        <div class="tag-row" id="distortionTags"></div>
+        <div class="tag-row" id="triggerTags"></div>
+
+        <div class="chart-wrap">
+          <svg id="emoChart" viewBox="0 0 320 100" width="100%" height="100" preserveAspectRatio="none"></svg>
+          <div class="chart-labels"><span>6 gün önce</span><span>Bugün</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec safety on-paper" id="guvenlik">
+  <div class="wrap safety-grid">
+    <div>
+      <span class="eyebrow" style="color:var(--sage)">Güvenlik ve etik</span>
+      <h2>Bu bir terapi değil;<br>dürüst bir aynadır.</h2>
+      <div style="margin-top:30px">
+        <div class="principle">
+          <span class="n">01</span>
+          <div><h4>Teşhis koymaz</h4><p>Tüm çıktılar "olası örüntü" diliyle sunulur; kesin bir klinik yargı değildir. Kullanıcı her etiketi onaylayabilir veya reddedebilir.</p></div>
+        </div>
+        <div class="principle">
+          <span class="n">02</span>
+          <div><h4>KVKK madde 6 ile uyumlu</h4><p>Ruhsal veriler özel nitelikli kişisel veridir. Açık, geri alınabilir rıza olmadan hiçbir veri işlenmez.</p></div>
+        </div>
+        <div class="principle">
+          <span class="n">03</span>
+          <div><h4>İçerik klinik onaydan geçer</h4><p>Psikoloji ekibinin taslakları, lisanslı bir klinik danışmanın onayından sonra yayınlanır.</p></div>
+        </div>
+        <div class="principle">
+          <span class="n">04</span>
+          <div><h4>Yardım her zaman bir tık uzakta</h4><p>Algoritmik risk tespiti iddia etmeyiz. Bunun yerine her kullanıcıya, her an, gerçek yardım hatlarını gösteririz.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="helpbox">
+      <h3>Türkiye'de yardım hatları</h3>
+      <p class="sub">Uygulama içinde her zaman görünür olacak, gerçek ve güncel kaynaklar</p>
+      <div class="helpline"><span class="num">112</span><span class="desc">Hayati tehlike / acil durum — 7/24 ücretsiz</span></div>
+      <div class="helpline"><span class="num">182</span><span class="desc">ALO Yaşam Hattı — intihar önleme ve ruhsal kriz, 7/24 ücretsiz</span></div>
+      <div class="helpline"><span class="num">183</span><span class="desc">ALO Sosyal Destek Hattı — aile ve psikososyal destek, 7/24 ücretsiz</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec team on-ink" id="ekip">
+  <div class="wrap team-row">
+    <div>
+      <span class="eyebrow" style="color:var(--gold-bright)">Bugün</span>
+      <h2 style="color:var(--text-ink)">İki kişiyiz.<br>Planımız gerçekçi.</h2>
+      <div style="margin-top:32px">
+        <div class="person">
+          <div class="avatar">Ps</div>
+          <div><h4>Psikoloji İçerik Uzmanı</h4><p>Taksonomi ve örnek anotasyonların taslağını hazırlar; klinik danışman onayına sunar.</p></div>
+        </div>
+        <div class="person">
+          <div class="avatar">Yz</div>
+          <div><h4>Yazılımcı</h4><p>Ürünü, NLP katmanını ve güvenlik altyapısını kurar.</p></div>
+        </div>
+        <div class="person" style="opacity:.55">
+          <div class="avatar">+</div>
+          <div><h4>Klinik danışman ve hukuk desteği</h4><p>Faz 1 öncesi eklenecek iki kritik dış bağlantı — detaylar ekip raporunda.</p></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="eyebrow" style="color:var(--sage-bright)">Yol haritası</span>
+      <div class="timeline" style="margin-top:26px">
+        <div class="phase"><span class="when">Ay 1-2 · Faz 0</span><h4>Prototip ve demo</h4><p>Sentetik veriyle test; gerçek kullanıcı verisi yok.</p></div>
+        <div class="phase"><span class="when">Ay 3-4 · Faz 1</span><h4>Kapalı beta</h4><p>Küçük gönüllü grup, açık rıza ve KVKK uyumlu altyapı.</p></div>
+        <div class="phase"><span class="when">Ay 5-6 · Faz 2</span><h4>Geri bildirim döngüsü</h4><p>Model iyileştirme, kullanıcı testleri, A/B denemeleri.</p></div>
+        <div class="phase"><span class="when">Ay 6+ · Faz 3</span><h4>Ölçekleme</h4><p>Üniversite iş birlikleri ve ek entegrasyonlar.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <span class="brand-mark" style="color:var(--text-ink);font-size:18px">Örüntü</span>
+    <p>Bu bir kavram önizlemesidir; ekip içi tartışma için hazırlanmıştır. Detaylı strateji ve düzeltmeler için ekip raporuna bakın.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var SAMPLES = [
+    "Bugün sınavım çok kötü geçti. Hep böyle oluyor, hiçbir zaman yeterince iyi olamıyorum. Herkes benden daha başarılı, ben hep geride kalıyorum.",
+    "İş yerinde patronumla konuşurken çok geriliyorum. Kesinlikle beni işten çıkaracak, sanki her şey mahvolacakmış gibi hissediyorum.",
+    "Bugün oldukça sakin bir gündü. Arkadaşımla yürüyüşe çıktık, biraz kitap okudum, kendimi rahat hissettim."
+  ];
+
+  var DISTORTIONS = [
+    { label: "Aşırı Genelleme", words: ["hep ", "her zaman", "hiçbir zaman", "asla", "herkes", "kimse"] },
+    { label: "Felaketleştirme", words: ["mahvol", "berbat", "felaket", "korkunç"] },
+    { label: "Kesin Yargı", words: ["kesinlikle", "tamamen"] }
+  ];
+
+  var TRIGGERS = [
+    { label: "Akademik / Sınav", words: ["sınav", "ders", "not ", "okul"] },
+    { label: "İş", words: ["iş yeri", "patron", "toplantı", "mesai", " iş "] },
+    { label: "İlişkiler", words: ["arkadaş", "aile", "eşim", "sevgili"] }
+  ];
+
+  var HISTORY = [3.4, 2.8, 3.6, 2.2, 3.0, 2.6]; // son 6 gün, 1(zorlayıcı)-5(dengeli)
+
+  var ta = document.getElementById('journalInput');
+  var out = document.getElementById('analyzedText');
+  var dTags = document.getElementById('distortionTags');
+  var tTags = document.getElementById('triggerTags');
+  var chart = document.getElementById('emoChart');
+
+  document.querySelectorAll('.chip').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      ta.value = SAMPLES[+btn.dataset.sample];
+      analyze();
+    });
+  });
+  document.getElementById('analyzeBtn').addEventListener('click', analyze);
+
+  function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function analyze(){
+    var raw = ta.value.trim();
+    if(!raw){ out.textContent = "Analiz etmek için soldan bir örnek seç ya da kendi cümleni yaz."; dTags.innerHTML=''; tTags.innerHTML=''; return; }
+
+    var lower = raw.toLocaleLowerCase('tr-TR');
+    var sentences = raw.split(/(?<=[.!?])\s+/).filter(Boolean);
+    var foundDistortions = [];
+    var htmlParts = sentences.map(function(sent){
+      var sLower = sent.toLocaleLowerCase('tr-TR');
+      var match = DISTORTIONS.find(function(d){ return d.words.some(function(w){ return sLower.indexOf(w) !== -1; }); });
+      if(match){
+        if(foundDistortions.indexOf(match.label) === -1) foundDistortions.push(match.label);
+        return '<mark title="Olası: ' + match.label + '">' + escapeHtml(sent) + '</mark>';
+      }
+      return escapeHtml(sent);
+    });
+    out.innerHTML = htmlParts.join(' ');
+
+    dTags.innerHTML = foundDistortions.length
+      ? foundDistortions.map(function(l){ return '<span class="tag">olası: ' + l + '</span>'; }).join('')
+      : '<span class="tag">belirgin bir çarpıtma örüntüsü işaretlenmedi</span>';
+
+    var foundTriggers = TRIGGERS.filter(function(t){ return t.words.some(function(w){ return lower.indexOf(w) !== -1; }); }).map(function(t){ return t.label; });
+    tTags.innerHTML = foundTriggers.length
+      ? foundTriggers.map(function(l){ return '<span class="tag trig">tetikleyici: ' + l + '</span>'; }).join('')
+      : '';
+
+    var negHits = 0;
+    DISTORTIONS.forEach(function(d){ d.words.forEach(function(w){ if(lower.indexOf(w)!==-1) negHits++; }); });
+    var today = Math.max(1, Math.min(5, 3.6 - negHits * 0.55));
+    drawChart(HISTORY.concat([today]));
+  }
+
+  function drawChart(points){
+    var w = 320, h = 100, pad = 10;
+    var max = 5, min = 1;
+    var stepX = (w - pad*2) / (points.length - 1);
+    var coords = points.map(function(v, i){
+      var x = pad + i*stepX;
+      var y = h - pad - ((v - min)/(max-min)) * (h - pad*2);
+      return [x,y];
+    });
+    var path = coords.map(function(c,i){ return (i===0?'M':'L') + c[0].toFixed(1) + ',' + c[1].toFixed(1); }).join(' ');
+    var dots = coords.map(function(c,i){
+      var isLast = i === coords.length-1;
+      return '<circle cx="'+c[0].toFixed(1)+'" cy="'+c[1].toFixed(1)+'" r="'+(isLast?4.5:3)+'" fill="'+(isLast?'#E3B968':'#9DB097')+'" />';
+    }).join('');
+    chart.innerHTML = '<path d="'+path+'" fill="none" stroke="#9DB097" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' + dots;
+  }
+
+  // ilk yükleme: sakin gün örneğiyle başlat
+  ta.value = SAMPLES[2];
+  analyze();
+
+  // hero çizim animasyonu
+  var heroPath = document.getElementById('heroPath');
+  if(heroPath && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var len = heroPath.getTotalLength();
+    heroPath.style.strokeDasharray = len;
+    heroPath.style.strokeDashoffset = len;
+    heroPath.getBoundingClientRect();
+    heroPath.style.transition = 'stroke-dashoffset 2.4s ease';
+    requestAnimationFrame(function(){ heroPath.style.strokeDashoffset = '0'; });
+
+    var dots = document.querySelectorAll('#heroDots circle');
+    dots.forEach(function(c, i){
+      c.style.opacity = '0';
+      c.style.transition = 'opacity .6s ease';
+      setTimeout(function(){ c.style.opacity = '1'; }, 1400 + i*160);
+    });
+  }
+})();
+</script>
+</body>
+</html>
